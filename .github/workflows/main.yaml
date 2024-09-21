@@ -1,0 +1,17 @@
+name: My GA Workflow
+# This workflow is triggered on pushes to the repository.
+on: [push]
+
+# Jobs are groups of steps that run in parallel.
+jobs:
+  # This workflow contains a single job called "test"
+  test: 
+    # specify runner
+    runs-on: ubuntu-latest
+    # Steps are a sequence of tasks that will be run in job
+    steps:
+      - name: first-step
+      # Commands to run in the step
+        run: echo "Hello, ${{ github.actor }}"
+      - name: Display repo name
+        run: echo "This workflow is for the ${{ github.repository }} repo"
