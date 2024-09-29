@@ -50,5 +50,5 @@ jobs:
               "failed_regions": "${{ env.script_output }}"
             }
         env:
-          SLACK_WEBHOOK_URL: https://hooks.slack.com/triggers/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
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         
