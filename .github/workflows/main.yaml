@@ -5,7 +5,7 @@ on: [push]
 # Jobs are groups of steps that run in parallel.
 jobs:
   # This workflow contains a single job called "test"
-  test: 
+  test-job: 
     # specify runner
     runs-on: ubuntu-latest
     # Steps are a sequence of tasks that will be run in job
@@ -15,3 +15,40 @@ jobs:
         run: echo "Hello, ${{ github.actor }}"
       - name: Display repo name
         run: echo "This workflow is for the ${{ github.repository }} repo"
+  run-python-script:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      # Run the Python script and capture the output
+      - name: Run Python script and capture output
+        id: run-script
+        run: |
+          pwd
+          script_output=$(python test.py)
+          echo "script_output=$script_output" >> $GITHUB_ENV
+
+      # Use the captured output in another step
+      - name: Print the captured output
+        run: |
+          echo "The Python script output is: ${{ env.script_output }}"
+      
+      - name: Send custom JSON data to Slack workflow
+        id: slack
+        uses: slackapi/slack-github-action@v1.27.0
+        with:
+          # This data can be any valid JSON from a previous step in the GitHub Action
+          payload: |
+            {
+              "failed_regions": "${{ env.script_output }}"
+            }
+        env:
+          SLACK_WEBHOOK_URL: https://hooks.slack.com/triggers/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
+        
